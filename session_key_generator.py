@@ -6,7 +6,7 @@ def gen_session_key():
         if x == 1:
             session_key += str(random.randint(0,9))
         #elif x == 2:
-        #    session_key += chr(random.randint(65, 90))
+        #    session_key += chr(random.randint(97, 122))
         elif x == 2:
-            session_key += chr(random.randint(97, 122))
+            session_key += chr(random.randint(65, 90))
     return session_key
