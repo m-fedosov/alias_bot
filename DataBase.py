@@ -98,6 +98,10 @@ def add_dictionary(key = ''):
         db = TinyDB('db.json')
         db.update({'dictionary': randomize_dict(file)}, Query().key == key)
 
+def word_from_dict(num_of_word = 0):
+    next_word = (get_from_session(key='first', take='dictionary'))[num_of_word]
+    return next_word
+
 def get_from_player(id = 0, take = 'curent_session'):
     """
     вытащить параметр с игрока
@@ -116,14 +120,14 @@ def get_from_session(key ='', take = 'lst'):
 
 
 
-
-clear()
-add_player(1,"Serik")
-add_player(2,"Goga")
-add_player(3,'Kuka')
-add_session('first')
-add_player_to_session(1,'first')
-add_player_to_session(2,'first')
-score_up(1)
-score_up(1)
-score_up(2)
+#print(word_from_dict())
+#clear()
+#add_player(1,"Serik")
+#add_player(2,"Goga")
+#add_player(3,'Kuka')
+#add_session('first')
+#add_player_to_session(1,'first')
+#add_player_to_session(2,'first')
+#score_up(1)
+#score_up(1)
+#score_up(2)
