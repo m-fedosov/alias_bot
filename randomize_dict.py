@@ -1,4 +1,4 @@
-import random
+import random, DataBase as db
 import numpy as np
 
 ''' Возвращает массив с перемешанными в случайном порядке словами'''
@@ -18,3 +18,8 @@ def randomize_dict():
 
     return unique_dict
 
+'''Возвращает новое слово из перемешанного словаря'''
+
+def new_word(unique_dict):
+    with open('words.txt', 'r', encoding = 'UTF-8') as file:
+        db.get
