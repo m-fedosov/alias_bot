@@ -80,7 +80,7 @@ def score_up(player_id,value=1):
     db = TinyDB('db.json')
     db.update(add('score',value),Query().id == player_id)
     
- def change_time(key = '',new_time = 60):
+def change_time(key = '',new_time = 60):
     """
     Поменять время в сессии
 
@@ -91,6 +91,13 @@ def score_up(player_id,value=1):
     db = TinyDB('db.json')
     db.update({'time_for_round' : new_time},Query().key == key)
 
+def get_from_player(id = 0, take = 'curent_session'):
+    """
+    вытащить параметр
+    """
+
+    db = TinyDB('db.json')
+    return db.search(Query().id == id)[0][take]
 
 clear()
 add_player(1,"Serik")
@@ -99,6 +106,7 @@ add_player(3,'Kuka')
 add_session('first')
 add_player_to_session(1,'first')
 add_player_to_session(2,'first')
+print(get_from_player(1))
 score_up(1)
 score_up(1)
 score_up(2)
