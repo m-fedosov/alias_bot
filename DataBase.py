@@ -79,6 +79,17 @@ def score_up(player_id,value=1):
     """
     db = TinyDB('db.json')
     db.update(add('score',value),Query().id == player_id)
+    
+ def change_time(key = '',new_time = 60):
+    """
+    Поменять время в сессии
+
+    :param key: ключ сессии, в  которой меняешь время
+    :param new_time: новое время
+    :return:
+    """
+    db = TinyDB('db.json')
+    db.update({'time_for_round' : new_time},Query().key == key)
 
 
 clear()
