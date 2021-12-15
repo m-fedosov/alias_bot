@@ -9,7 +9,7 @@ site_data = BeautifulSoup(response.text, 'html.parser')
 site_data.prettify()
 x = site_data.find_all('td')
 words_list = []
-for i in range(8,len(x), 5):
+for i in range(8, len(x), 5):
     words_list.append(x[i])
 words_list_text =[]
 for k in words_list:
