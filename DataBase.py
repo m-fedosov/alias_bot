@@ -1,5 +1,6 @@
 from tinydb import TinyDB, Query
 from tinydb.operations import increment, add
+from randomize_dict import randomize_dict
 
 
 
@@ -18,7 +19,8 @@ def add_session(key='', lst=[], time=60):
          'key': key,
          'time_for_round': time,
          'step': 0,
-         'list_of_players': lst
+         'list_of_players': lst,
+         'dictionary': []
          }
     )
 
@@ -91,13 +93,29 @@ def change_time(key = '',new_time = 60):
     db = TinyDB('db.json')
     db.update({'time_for_round' : new_time},Query().key == key)
 
+def add_dictionary(key = ''):
+    with open ('words.txt', 'r', encoding="UTF-8") as file:
+        db = TinyDB('db.json')
+        db.update({'dictionary': randomize_dict(file)}, Query().key == key)
+
 def get_from_player(id = 0, take = 'curent_session'):
     """
-    вытащить параметр
+    вытащить параметр с игрока
     """
 
     db = TinyDB('db.json')
     return db.search(Query().id == id)[0][take]
+
+def get_from_session(key ='', take = 'lst'):
+    """
+    вытащить параметр из сессии
+    """
+    db = TinyDB('db.json')
+    return db.search(Query().key == key)[0][take]
+
+
+
+
 
 clear()
 add_player(1,"Serik")
@@ -106,7 +124,6 @@ add_player(3,'Kuka')
 add_session('first')
 add_player_to_session(1,'first')
 add_player_to_session(2,'first')
-print(get_from_player(1))
 score_up(1)
 score_up(1)
 score_up(2)
