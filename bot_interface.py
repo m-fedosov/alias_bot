@@ -23,6 +23,14 @@ def send_welcome(message):
                                       'набрать больше 24 очков', reply_markup=reply_markup, parse_mode="HTML")
 
 
+@bot.message_handler(content_types=['text'])
+def get_session(message):
+    session = message.text
+    session = session.upper()
+    db.add_player(message.from_user.id, message.from_user.username)
+    db.add_player_to_session(message.from_user.id, session)
+
+
 @bot.callback_query_handler(func=lambda call: True)
 def callback_query(call):
     if call.data == "Create_Game":
@@ -35,7 +43,7 @@ def callback_query(call):
     elif call.data == "Round_Length":
         round_length(call)
     elif call.data == "Join":
-        bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.message_id, text='')
+        join_game(call)
     elif call.data == "Start_Game":
 
         bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.message_id, text='')
@@ -71,7 +79,9 @@ def create_game(call):
 
 
 def join_game(call):
-
+    input_session = 'Введете номер сессии:'
+    bot.register_next_step_handler(bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.message_id,
+                          text=input_session, parse_mode="HTML"), get_session)
 
 
 def start_game(call):
