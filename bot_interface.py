@@ -52,8 +52,8 @@ def callback_query(call):
     elif call.data == "Join":
         join_game(call)
     elif call.data == "Start_Game":
-
-        bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.message_id, text='')
+        #bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.message_id, text='')
+        game_round(call)
     elif call.data == "Time_For_Round_10":
         change_length_session(10, call)
     elif call.data == "Time_For_Round_30":
@@ -97,10 +97,15 @@ def join_game(call):
     
 
 
-def start_game(call):
+def game_round(call):
+    bot.send_message(call.message.chat.id, 'gachi club')
     alias_speaker = ''
-    bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.message_id,
-                          text=seconds_text, parse_mode="HTML", reply_markup=reply_markup)
+    keyboard = [
+        [telebot.types.InlineKeyboardButton('Отгадано', callback_data= 'Guessed'),
+        telebot.types.InlineKeyboardButton('Пропустить', callback_data='Next_word')]
+    ]
+    #bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.message_id,
+    #                      text=seconds_text, parse_mode="HTML", reply_markup=reply_markup)
 
 def round_length(call):
     keyboard = [

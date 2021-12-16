@@ -48,7 +48,7 @@ def add_player_to_session(player_id=0, session_key=0):
         db.update(add('list_of_players', [player_id]), Query().key == session_key)
         db.update({'curent_session':session_key},Query().id == player_id)
     else :
-        print("Уже етсь игрок в сессии",session_key," с id", player_id)
+        print("Уже есть игрок в сессии",session_key," с id", player_id)
 
 
 
@@ -65,7 +65,7 @@ def add_player(id=0, name='Petux'):
             {
                 'type': 'player',
                 'name': name,
-                'curent_session': -1,
+                'curent_session': '-1',
                 'id': id,
                 'score': 0
             }
@@ -93,7 +93,6 @@ def score_up(player_id,value=1):
     if db.search(Query().id == player_id) != []:
         db.update(add('score',value),Query().id == player_id)
 
-    
 def change_time(key = '',new_time = 60):
     """
     Поменять время в сессии
