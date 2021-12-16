@@ -1,4 +1,4 @@
-import random
+#import random
 import numpy as np
 
 ''' Возвращает массив с перемешанными в случайном порядке словами'''
