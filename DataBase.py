@@ -1,6 +1,6 @@
 from tinydb import TinyDB, Query
 from tinydb.operations import increment, add
-#from randomize_dict import randomize_dict
+from randomize_dict import randomize_dict
 
 
 
@@ -14,14 +14,16 @@ def add_session(key='', lst=[], time=60):
     :return:
     """
     db = TinyDB('db.json')
-    if True or db.search(Query().key == key) == []:
+    if db.search(Query().key == key) == []:
         db.insert(
             {'type': 'session',
              'key': key,
              'time_for_round': time,
              'step': 0,
              'list_of_players': lst,
-             'dictionary': []
+             'dictionary': [],
+             'order_player': 0,
+             'order_word': 0
              }
         )
     else:
@@ -44,7 +46,7 @@ def add_player_to_session(player_id=0, session_key=0):
     if db.search(Query().key == session_key) == []:
         print("нет сессии с номером", session_key)
         raise ValueError
-    if True or player_id not in get_from_session(session_key):
+    if player_id not in get_from_session(session_key):
         db.update(add('list_of_players', [player_id]), Query().key == session_key)
         db.update({'curent_session':session_key},Query().id == player_id)
     else :
@@ -60,7 +62,7 @@ def add_player(id=0, name='Petux'):
     :return:
     """
     db = TinyDB('db.json')
-    if True or db.search(Query().id == id) == []:
+    if db.search(Query().id == id) == []:
         db.insert(
             {
                 'type': 'player',
@@ -90,7 +92,7 @@ def score_up(player_id,value=1):
     :return:
     """
     db = TinyDB('db.json')
-    if True or db.search(Query().id == player_id) != []:
+    if db.search(Query().id == player_id) != []:
         db.update(add('score',value),Query().id == player_id)
 
     
@@ -103,16 +105,16 @@ def change_time(key = '',new_time = 60):
     :return:
     """
     db = TinyDB('db.json')
-    if True or db.search(Query().key == key)!= []:
+    if db.search(Query().key == key)!= []:
         db.update({'time_for_round' : new_time},Query().key == key)
 
 def add_dictionary(key = ''):
     with open ('words.txt', 'r', encoding="UTF-8") as file:
         db = TinyDB('db.json')
-        db.update({'dictionary': randomize_dict(file)}, Query().key == key)
+        db.update({'dictionary': randomize_dict()}, Query().key == key)
 
-def word_from_dict(num_of_word = 0):
-    next_word = (get_from_session(key='first', take='dictionary'))[num_of_word]
+def word_from_dict(session_number, num_of_word = 0):
+    next_word = (get_from_session(key=session_number, take='dictionary'))[num_of_word]
     return next_word
 
 def get_from_player(id = 0, take = 'curent_session'):
@@ -121,7 +123,7 @@ def get_from_player(id = 0, take = 'curent_session'):
     """
 
     db = TinyDB('db.json')
-    if True or db.search(Query().id == id) != []:
+    if db.search(Query().id == id) != []:
         return db.search(Query().id == id)[0][take]
 
 def get_from_session(key ='', take = 'list_of_players'):
@@ -130,6 +132,17 @@ def get_from_session(key ='', take = 'list_of_players'):
     """
     db = TinyDB('db.json')
     return db.search(Query().key == key)[0][take]
+
+def next_alias_answering(session_num, next_pl=0, take = 'order_player'):
+    
+    db = TinyDB('db.json')
+    next_player = db.search(Query().key == session_num)[0][take] 
+    return next_player
+
+
+
+
+
 
 
 # clear()

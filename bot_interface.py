@@ -85,16 +85,18 @@ def join_game(call):
 
 def play_game(call):
     keyboard = [
-        [telebot.types.InlineKeyboardButton("Егор", callback_data='Start_game')],
-        [telebot.types.InlineKeyboardButton("Игорь", callback_data='Start_Game')]
+        [telebot.types.InlineKeyboardButton("Отгадано", callback_data='Start_Game')]
     ]
 
     reply_markup = telebot.types.InlineKeyboardMarkup(keyboard)
 
     session_number = db.get_from_player(call.from_user.id)
-    alias_word = db.word_from_dict(session_number, 0)
+
+    index = (db.get_from_session(key = session_number)).index(call.from_user.id)
+    print(index)
+    alias_word = db.word_from_dict(session_number, index)
     bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.message_id,
-                          text=alias_word, parse_mode="HTML")
+                          text=alias_word, parse_mode="HTML", reply_markup=reply_markup)
 
 
 def round_length(call):
