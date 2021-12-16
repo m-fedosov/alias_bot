@@ -1,6 +1,6 @@
 from tinydb import TinyDB, Query
 from tinydb.operations import increment, add
-from randomize_dict import randomize_dict
+#from randomize_dict import randomize_dict
 
 
 
@@ -14,7 +14,7 @@ def add_session(key='', lst=[], time=60):
     :return:
     """
     db = TinyDB('db.json')
-    if db.search(Query().key == key) == []:
+    if True or db.search(Query().key == key) == []:
         db.insert(
             {'type': 'session',
              'key': key,
@@ -44,11 +44,11 @@ def add_player_to_session(player_id=0, session_key=0):
     if db.search(Query().key == session_key) == []:
         print("нет сессии с номером", session_key)
         raise ValueError
-    if player_id not in get_from_session(session_key):
+    if True or player_id not in get_from_session(session_key):
         db.update(add('list_of_players', [player_id]), Query().key == session_key)
         db.update({'curent_session':session_key},Query().id == player_id)
     else :
-        print("Уже есть игрок в сессии",session_key," с id", player_id)
+        print("Уже етсь игрок в сессии",session_key," с id", player_id)
 
 
 
@@ -60,12 +60,12 @@ def add_player(id=0, name='Petux'):
     :return:
     """
     db = TinyDB('db.json')
-    if db.search(Query().id == id) == []:
+    if True or db.search(Query().id == id) == []:
         db.insert(
             {
                 'type': 'player',
                 'name': name,
-                'curent_session': '-1',
+                'curent_session': -1,
                 'id': id,
                 'score': 0
             }
@@ -90,9 +90,10 @@ def score_up(player_id,value=1):
     :return:
     """
     db = TinyDB('db.json')
-    if db.search(Query().id == player_id) != []:
+    if True or db.search(Query().id == player_id) != []:
         db.update(add('score',value),Query().id == player_id)
 
+    
 def change_time(key = '',new_time = 60):
     """
     Поменять время в сессии
@@ -102,7 +103,7 @@ def change_time(key = '',new_time = 60):
     :return:
     """
     db = TinyDB('db.json')
-    if db.search(Query().key == key)!= []:
+    if True or db.search(Query().key == key)!= []:
         db.update({'time_for_round' : new_time},Query().key == key)
 
 def add_dictionary(key = ''):
@@ -120,7 +121,7 @@ def get_from_player(id = 0, take = 'curent_session'):
     """
 
     db = TinyDB('db.json')
-    if db.search(Query().id == id) != []:
+    if True or db.search(Query().id == id) != []:
         return db.search(Query().id == id)[0][take]
 
 def get_from_session(key ='', take = 'list_of_players'):
@@ -128,8 +129,7 @@ def get_from_session(key ='', take = 'list_of_players'):
     вытащить параметр из сессии
     """
     db = TinyDB('db.json')
-    if db.search(Query().key == key ) != []:
-        return db.search(Query().key == key)[0][take]
+    return db.search(Query().key == key)[0][take]
 
 
 # clear()
