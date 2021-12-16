@@ -25,17 +25,10 @@ def send_welcome(message):
 
 @bot.message_handler(content_types=['text'])
 def get_session(message):
-    # with open('db.json', 'r') as database:
-    #     if not message in database:
-    #         bot.send_message(message.chat.id, 'Введите существующий идентификатор сессии')
-    #     else:
     session = message.text
     session = session.upper()
     db.add_player(message.from_user.id, message.from_user.username)
     db.add_player_to_session(message.from_user.id, session)
-    bot.send_message(chat_id=message.chat.id, text='Вы присоединились к игре')
-    
-
 
 
 @bot.callback_query_handler(func=lambda call: True)
@@ -52,8 +45,8 @@ def callback_query(call):
     elif call.data == "Join":
         join_game(call)
     elif call.data == "Start_Game":
-        #bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.message_id, text='')
-        game_round(call)
+
+        bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.message_id, text='')
     elif call.data == "Time_For_Round_10":
         change_length_session(10, call)
     elif call.data == "Time_For_Round_30":
@@ -86,26 +79,15 @@ def create_game(call):
 
 
 def join_game(call):
-    keyboard = [
-        [telebot.types.InlineKeyboardButton('Начать игру', callback_data='Start_Game')]
-    ]
-    reply_markup = telebot.types.InlineKeyboardButton(keyboard)
     input_session = 'Введите номер сессии:'
     bot.register_next_step_handler(bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.message_id,
                           text=input_session, parse_mode="HTML"), get_session)
-    
-    
 
 
-def game_round(call):
-    bot.send_message(call.message.chat.id, 'gachi club')
+def start_game(call):
     alias_speaker = ''
-    keyboard = [
-        [telebot.types.InlineKeyboardButton('Отгадано', callback_data= 'Guessed'),
-        telebot.types.InlineKeyboardButton('Пропустить', callback_data='Next_word')]
-    ]
-    #bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.message_id,
-    #                      text=seconds_text, parse_mode="HTML", reply_markup=reply_markup)
+    bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.message_id,
+                          text=seconds_text, parse_mode="HTML", reply_markup=reply_markup)
 
 def round_length(call):
     keyboard = [
