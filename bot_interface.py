@@ -33,6 +33,7 @@ def get_session(message):
     session = session.upper()
     db.add_player(message.from_user.id, message.from_user.username)
     db.add_player_to_session(message.from_user.id, session)
+    bot.send_message(chat_id=message.chat.id, text='Вы присоединились к игре')
     
 
 
@@ -85,9 +86,15 @@ def create_game(call):
 
 
 def join_game(call):
+    keyboard = [
+        [telebot.types.InlineKeyboardButton('Начать игру', callback_data='Start_Game')]
+    ]
+    reply_markup = telebot.types.InlineKeyboardButton(keyboard)
     input_session = 'Введите номер сессии:'
     bot.register_next_step_handler(bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.message_id,
                           text=input_session, parse_mode="HTML"), get_session)
+    
+    
 
 
 def start_game(call):
