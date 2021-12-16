@@ -45,8 +45,7 @@ def callback_query(call):
     elif call.data == "Join":
         join_game(call)
     elif call.data == "Start_Game":
-
-        bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.message_id, text='')
+        play_game(call)
     elif call.data == "Time_For_Round_10":
         change_length_session(10, call)
     elif call.data == "Time_For_Round_30":
@@ -66,13 +65,13 @@ def create_game(call):
     ]
 
     reply_markup = telebot.types.InlineKeyboardMarkup(keyboard)
-    try:
-        session_number = db.get_from_player(call.from_user.id)
-    except:
+    session_number = db.get_from_player(call.from_user.id)
+    if session_number == None:
         session_number = gen_session_key()
         db.add_session(session_number)
-        db.add_player(call.from_user.id)
+        db.add_player(call.from_user.id, name=call.from_user.username)
         db.add_player_to_session(call.from_user.id, session_number)
+        db.add_dictionary(session_number)
     createGameMessage = f'Игрокам нужно присоединиться по номеру: {session_number}'
     bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.message_id, text=createGameMessage,
                           reply_markup=reply_markup)
@@ -84,10 +83,19 @@ def join_game(call):
                           text=input_session, parse_mode="HTML"), get_session)
 
 
-def start_game(call):
-    alias_speaker = ''
+def play_game(call):
+    keyboard = [
+        [telebot.types.InlineKeyboardButton("Егор", callback_data='Start_game')],
+        [telebot.types.InlineKeyboardButton("Игорь", callback_data='Start_Game')]
+    ]
+
+    reply_markup = telebot.types.InlineKeyboardMarkup(keyboard)
+
+    session_number = db.get_from_player(call.from_user.id)
+    alias_word = db.word_from_dict(session_number, 0)
     bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.message_id,
-                          text=seconds_text, parse_mode="HTML", reply_markup=reply_markup)
+                          text=alias_word, parse_mode="HTML")
+
 
 def round_length(call):
     keyboard = [
@@ -97,9 +105,7 @@ def round_length(call):
         [telebot.types.InlineKeyboardButton("60", callback_data='Time_For_Round_60'),
          telebot.types.InlineKeyboardButton("90", callback_data='Time_For_Round_90')]
     ]
-    print(keyboard)
     reply_markup = telebot.types.InlineKeyboardMarkup(keyboard)
-    print(reply_markup)
     round_length_text = 'Выберите длительность раунда (в секундах)'
     bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.message_id,
                           text=round_length_text, parse_mode="HTML", reply_markup=reply_markup)
