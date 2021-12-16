@@ -25,10 +25,16 @@ def send_welcome(message):
 
 @bot.message_handler(content_types=['text'])
 def get_session(message):
+    # with open('db.json', 'r') as database:
+    #     if not message in database:
+    #         bot.send_message(message.chat.id, 'Введите существующий идентификатор сессии')
+    #     else:
     session = message.text
     session = session.upper()
     db.add_player(message.from_user.id, message.from_user.username)
     db.add_player_to_session(message.from_user.id, session)
+    
+
 
 
 @bot.callback_query_handler(func=lambda call: True)
@@ -79,7 +85,7 @@ def create_game(call):
 
 
 def join_game(call):
-    input_session = 'Введете номер сессии:'
+    input_session = 'Введите номер сессии:'
     bot.register_next_step_handler(bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.message_id,
                           text=input_session, parse_mode="HTML"), get_session)
 
