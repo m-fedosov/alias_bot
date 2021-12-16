@@ -9,9 +9,7 @@ bot = telebot.TeleBot("5036774816:AAHchvlUTJaraZVF0YjQU45x0PviPkweH8I", parse_mo
 def send_welcome(message):
     """Sends a message with three inline buttons attached."""
     keyboard = [
-        [telebot.types.InlineKeyboardButton("Создать игру", callback_data='Create_Game')],
-        [telebot.types.InlineKeyboardButton("Присоединиться", callback_data='Join')],
-        [telebot.types.InlineKeyboardButton("Авторы", callback_data='Authors')]
+        [telebot.types.InlineKeyboardButton("Поехали", callback_data='Create_Game')],
     ]
 
     reply_markup = telebot.types.InlineKeyboardMarkup(keyboard)
@@ -56,31 +54,28 @@ def callback_query(call):
         change_length_session(60, call)
     elif call.data == "Time_For_Round_90":
         change_length_session(90, call)
+    elif call.data == "Teams":
+        change_teams(call)
+
 
 
 def create_game(call):
     keyboard = [
         [telebot.types.InlineKeyboardButton("Длительность раунда", callback_data='Round_Length')],
-        [telebot.types.InlineKeyboardButton("Начать игру", callback_data='Start_Game')]
+        [telebot.types.InlineKeyboardButton("Начать игру", callback_data='Start_Game')],
+        [telebot.types.InlineKeyboardButton("Добавить команды (по умолчанию две)", callback_data='Teams')]
     ]
 
     reply_markup = telebot.types.InlineKeyboardMarkup(keyboard)
-    session_number = db.get_from_player(call.from_user.id)
-    if session_number == None:
-        session_number = gen_session_key()
-        db.add_session(session_number)
-        db.add_player(call.from_user.id, name=call.from_user.username)
-        db.add_player_to_session(call.from_user.id, session_number)
-        db.add_dictionary(session_number)
-    createGameMessage = f'Игрокам нужно присоединиться по номеру: {session_number}'
+    createGameMessage = 'легендарная хуйня'
     bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.message_id, text=createGameMessage,
                           reply_markup=reply_markup)
 
 
-def join_game(call):
-     input_session = 'Введите номер сессии:'
-     bot.register_next_step_handler(bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.message_id,
-                           text=input_session, parse_mode="HTML"), get_session)
+# def join_game(call):
+#      input_session = 'Введите номер сессии:'
+#      bot.register_next_step_handler(bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.message_id,
+#                            text=input_session, parse_mode="HTML"), get_session)
 
 
 def play_game(call):
@@ -125,5 +120,20 @@ def change_length_session(sec, call):
     bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.message_id,
                           text=seconds_text, parse_mode="HTML", reply_markup=reply_markup)
 
+def change_teams(call):
+    keyboard = [
+        [telebot.types.InlineKeyboardButton("ОК", callback_data='Create_Game')],
+        [telebot.types.InlineKeyboardButton("Супер-коровы", callback_data='Super_Cows')],
+        [telebot.types.InlineKeyboardButton("Псы-Волколаки", callback_data='Were_Wolves')],
+        [telebot.types.InlineKeyboardButton("Ночные Бабушки", callback_data='Night_Grans')],
+    ]
+    reply_markup = telebot.types.InlineKeyboardMarkup(keyboard)
+    teams_text = 'Введите все названия команд и тыкните ок' 
+    msg = bot.send_message(chat_id=call.message.chat.id, reply_to_message_id=call.message.message_id,
+                          text=teams_text, parse_mode="HTML")
+    bot.register_next_step_handler(msg.msg, create_game) # reply_markup=reply_markup), create_game)
+
+def successfully_added_teams(call):
+    keyboard = [[telebot.types.InlineKeyboardButton("ОК", callback_data='Create_Game')]]
 
 bot.polling()
