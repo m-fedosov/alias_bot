@@ -18,6 +18,8 @@ class Team:
         """
         self.name = name
         self.points = 0
+    def add_points(self, k : int):
+        self.points += k
     def __repr__(self) -> str:
         return str(self.name) + ' '+ str(self.points)
 
@@ -41,11 +43,16 @@ class Session:
         self.counter = 0
         self.order = 0
         self.round_time = 30
+        self.temp_points = 0
 
     def next_team(self,points):
-        self.teams[self.order] += points
-        self.order = (self.order + 1)% len(self.teams)
-    
+        self.temp_points += points
+        if self.counter % (self.round_time) == 0:
+            self.teams[self.order].add_points(self.temp_points)
+            self.order = (self.order + 1)% len(self.teams)
+            self.temp_points = 0
+
+        #print(self.teams)
     def give_word(self):
         """
         Метод возвращает слово из словаря сессии
@@ -56,12 +63,13 @@ class Session:
         self.counter += 1
         return ret
     
-    def add_team(self,team : Team):
+    def add_team(self,name):
         """
         Метод добавляет в сессию новую команду
 
         :param team: класс Team, команда, которая будет добавлена в сессию, если её ещё там нет
         """
+        team = Team(name)
         if team not in self.teams:
             self.teams.append(team)
         else:

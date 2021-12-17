@@ -49,15 +49,25 @@ def callback_query(call):
     elif "Start_Game" in call.data:
         game(call)
     elif "YES" in call.data:
+        cur_session = sessions[call.data[-4:]]
+
+
+
+        if 'guessed' in call.data:
+            cur_session.next_team(1)
+        if 'passed' in call.data:
+            cur_session.next_team(0)
+
         round(call)
+
     elif "Time_For_Round_10" in call.data:
-        sessions[call.data[-4:]].change_time(10)
+        sessions[call.data[-4:]].change_time(3)
         print(sessions)
     elif "Time_For_Round_30" in call.data:
-        sessions[call.data[-4:]].change_time(30)
+        sessions[call.data[-4:]].change_time(5)
         print(sessions)
     elif "Time_For_Round_45" in call.data:
-        sessions[call.data[-4:]].change_time(45)
+        sessions[call.data[-4:]].change_time(10)
         print(sessions)
     elif "Time_For_Round_60" in call.data:
         sessions[call.data[-4:]].change_time(60)
@@ -125,20 +135,22 @@ def round(call):
         [telebot.types.InlineKeyboardButton("Отгадано", callback_data='YES_guessed' + '$' + call.data[-4:])],
         [telebot.types.InlineKeyboardButton("Пропущено", callback_data='YES_passed' + '$' + call.data[-4:])]
     ]
-
+    print(cur_session)
     reply_markup = telebot.types.InlineKeyboardMarkup(keyboard)
-    bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.message_id, text="ваше слово: "+word,
+    bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.message_id, text=  "ваше слово: "+word,
                           reply_markup=reply_markup)
 
+
+    #bot.reply_to()
     #round(call)
     #game(call)
 
 
 def round_length(call):
     keyboard = [
-        [telebot.types.InlineKeyboardButton("10", callback_data='Time_For_Round_10'+'$'+call.data[-4:]),
-         telebot.types.InlineKeyboardButton("30", callback_data='Time_For_Round_30'+'$'+call.data[-4:]),
-         telebot.types.InlineKeyboardButton("45", callback_data='Time_For_Round_45'+'$'+call.data[-4:])],
+        [telebot.types.InlineKeyboardButton("3", callback_data='Time_For_Round_10'+'$'+call.data[-4:]),
+         telebot.types.InlineKeyboardButton("5", callback_data='Time_For_Round_30'+'$'+call.data[-4:]),
+         telebot.types.InlineKeyboardButton("10", callback_data='Time_For_Round_45'+'$'+call.data[-4:])],
         [telebot.types.InlineKeyboardButton("60", callback_data='Time_For_Round_60'+'$'+call.data[-4:]),
          telebot.types.InlineKeyboardButton("ОК", callback_data='Create_Game'+'$'+call.data[-4:]),
          telebot.types.InlineKeyboardButton("90", callback_data='Time_For_Round_90'+'$'+call.data[-4:])]
