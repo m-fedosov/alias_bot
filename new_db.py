@@ -82,11 +82,18 @@ class Session:
 
         :param team: класс Team, команда, которая будет добавлена в сессию, если её ещё там нет
         """
+        #print(name)
         team = Team(name)
-        if team not in self.teams:
-            self.teams.append(team)
-        else:
-            print("попытка дважды добавить команду",team)
+        print(team)
+        for i in self.teams:
+            if i.name == team.name:
+                return 0
+        self.teams.append(team)
+
+        # if team not in self.teams:
+        #     self.teams.append(team)
+        # else:
+        #     print("попытка дважды добавить команду",team)
     
     def change_time(self, changed):
         """
@@ -100,10 +107,13 @@ class Session:
         """
         Метод очищает все поля сессии
         """
-        self.key = ''
-        self.teams = []
-        self.dictionary = []
+        #self.key = ''
+        #self.teams = []
+        #self.dictionary = []
+        for team in self.teams:
+            team.points = 0
         self.counter = 0
+        self.temp_points = 0
 
     def __repr__(self) -> str:
         return str(self.key)+ ' ' +str(self.counter)+ ' ' + str(self.round_time)+ ' ' +str(self.teams) 

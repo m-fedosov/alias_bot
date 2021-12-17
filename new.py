@@ -17,7 +17,7 @@ def send_welcome(message):
 
     
     keyboard = [
-        [telebot.types.InlineKeyboardButton("Поехали", callback_data='Create_Game'+'$'+new_key)],
+        [telebot.types.InlineKeyboardButton("Поехали", callback_data='Create_Game'+'$'+new_key)]
     ]
 
     reply_markup = telebot.types.InlineKeyboardMarkup(keyboard)
@@ -29,21 +29,12 @@ def send_welcome(message):
                                       'набрать больше 24 очков', reply_markup=reply_markup, parse_mode="HTML")
 
 
-# @bot.message_handler(content_types=['text'])
-# def get_session(message):
-#     session = message.text
-#     session = session.upper()
-#     db.add_player(message.from_user.id, message.from_user.username)
-#     db.add_player_to_session(message.from_user.id, session)
-
 
 @bot.callback_query_handler(func=lambda call: True)
 def callback_query(call):
     if "Create_Game" in call.data:
+
         create_game(call)
-    # elif call.data == "Authors":
-    #     print(call.from_user)
-    #     pass
     elif "Round_Length" in call.data:
         round_length(call)
     elif "Start_Game" in call.data:
@@ -95,6 +86,7 @@ def callback_query(call):
         print(sessions)
     elif 'Ночные Бабушки' in call.data:
         sessions[call.data[-4:]].add_team((call.data)[:-5])
+        print(call.data)
         print(sessions)
     elif 'Биполярные Медведи' in call.data:
         sessions[call.data[-4:]].add_team((call.data)[:-5])
@@ -104,13 +96,19 @@ def callback_query(call):
         print(sessions)
     elif 'End_Game' in call.data:
         thanks(call)
+    elif 'Next_Game' in call.data:
+        cur_session = sessions[call.data[-4:]]
+        cur_session.clear()
+        create_game(call)
+    elif 'Authors' in call.data:
+        authors(call)
+    elif 'after_authors' in call.data:
+        game_end(call)
+
 
 def create_game(call):
-    
+
     new_key = call.data[-4:]
-    # new_key=gen_session_key()
-    # new_session = db.Session(new_key)
-    # sessions[new_key] = new_session
 
     keyboard = [
         [telebot.types.InlineKeyboardButton("Длительность раунда", callback_data='Round_Length'+'$'+new_key)],
@@ -159,10 +157,6 @@ def round(call):
                           reply_markup=reply_markup)
 
 
-    #bot.reply_to()
-    #round(call)
-    #game(call)
-
 
 def round_length(call):
     keyboard = [
@@ -178,16 +172,6 @@ def round_length(call):
     bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.message_id,
                           text=round_length_text, parse_mode="HTML", reply_markup=reply_markup)
 
-
-# def change_length_session(sec, call):
-#     session_number = db.get_from_player(call.from_user.id)
-#     db.change_time(session_number, sec)
-#     keyboard = [[telebot.types.InlineKeyboardButton("ОК", callback_data='Create_Game'),
-#                 telebot.types.InlineKeyboardButton("изменить", callback_data='Round_Length')]]
-#     reply_markup = telebot.types.InlineKeyboardMarkup(keyboard)
-#     seconds_text = f'Длительность раунда {sec} секунд'
-#     bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.message_id,
-#                           text=seconds_text, parse_mode="HTML", reply_markup=reply_markup)
 
 def change_teams(call):
     keyboard = [
@@ -210,8 +194,9 @@ def game_end(call):
     cur_session = sessions[call.data[-4:]]
 
     keyboard = [
-        [telebot.types.InlineKeyboardButton("Новая игра", callback_data='Create_Game'+'$'+call.data[-4:])],
-        [telebot.types.InlineKeyboardButton("Завершить игру", callback_data='End_Game'+'$'+call.data[-4:])]
+        [telebot.types.InlineKeyboardButton("Новая игра", callback_data='Next_Game'+'$'+call.data[-4:])],
+        [telebot.types.InlineKeyboardButton("Завершить игру", callback_data='End_Game'+'$'+call.data[-4:])],
+        [telebot.types.InlineKeyboardButton("Авторы", callback_data='Authors'+'$'+call.data[-4:])]
     ]
 
     text_endgame = 'Игра завершена, победила команда команда\n'
@@ -223,11 +208,31 @@ def game_end(call):
     bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.message_id,
                           text=text_endgame, parse_mode="HTML", reply_markup=reply_markup)
 
+
+def authors(call):
+    keyboard = [
+        [telebot.types.InlineKeyboardButton("Панаятна", callback_data='after_authors' +'$' +call.data[-4:])],
+    ]
+    reply_markup = telebot.types.InlineKeyboardMarkup(keyboard)
+    createGameMessage = 'Авторы рукожопы и ленятий ничего делать не умеют, на звания пРоГрАмМиСтОв не претендуют'
+    bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.message_id, text=createGameMessage,
+                          reply_markup=reply_markup)
+
+
+# def next_game(call):
+#     cur_session = sessions[call.data[-4:]]
+
+
+
+
 def thanks(call):
+    cur_session = sessions[call.data[-4:]]
+    cur_session.clear()
     text = "Спасибо за игру"
     keyboard = [[]]
     reply_markup = telebot.types.InlineKeyboardMarkup(keyboard)
     bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.message_id,
                           text=text, parse_mode="HTML", reply_markup=reply_markup)
 
-bot.polling()
+#bot.polling()
+bot.infinity_polling()
