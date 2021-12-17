@@ -62,6 +62,7 @@ class Session:
             #return False
             return 2
 
+
     def cur_team(self):
         return self.teams[self.order].name
 
