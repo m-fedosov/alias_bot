@@ -6,7 +6,15 @@ import numpy as np
 
 
 class Team:
+    """
+    Класс команды, хранит информацию о команде (название и набранные очки)
+    """
     def __init__(self, name):
+        """
+        Конструктор
+
+        :param name: название команды
+        """
         self.name = name
         self.points = 0
     def __repr__(self) -> str:
@@ -14,7 +22,15 @@ class Team:
 
 
 class Session:
+    """
+    Класс сессии, хранит информацию о сессии
+    """
     def __init__(self, key):
+        """
+        Конструктор
+
+        :param key: ключ сессии
+        """
         self.teams = []
 
         with open("words.txt", encoding='utf-8') as file:
@@ -24,17 +40,38 @@ class Session:
         self.round_time = 30
     
     def give_word(self):
+        """
+        Метод возвращает слово из словаря сессии
+
+        :return: очередное слово
+        """
         ret = self.dictionary[self.counter]
         self.counter += 1
         return ret
     
     def add_team(self,team : Team):
-        self.teams.append(team)
+        """
+        Метод добавляет в сессию новую команду
+
+        :param team: класс Team, команда, которая будет добавлена в сессию, если её ещё там нет
+        """
+        if team not in self.teams:
+            self.teams.append(team)
+        else:
+            print("попытка дважды добавить команд",team)
     
     def change_time(self, changed):
+        """
+        Метод изменяет время одного раунда в сессии
+
+        :param changed: новое время
+        """
         self.round_time = changed
     
     def clear(self):
+        """
+        Метод очищает все поля сессии
+        """
         self.key = ''
         self.teams = []
         self.dictionary = []
