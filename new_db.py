@@ -51,6 +51,9 @@ class Session:
             self.teams[self.order].add_points(self.temp_points)
             self.order = (self.order + 1)% len(self.teams)
             self.temp_points = 0
+            return True
+        else:
+            return False
 
         #print(self.teams)
     def give_word(self):

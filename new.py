@@ -51,14 +51,20 @@ def callback_query(call):
     elif "YES" in call.data:
         cur_session = sessions[call.data[-4:]]
 
-
-
         if 'guessed' in call.data:
-            cur_session.next_team(1)
-        if 'passed' in call.data:
-            cur_session.next_team(0)
+            if cur_session.next_team(1):
+                game(call)
+            else:
+                round(call)
+        elif 'passed' in call.data:
+            if cur_session.next_team(0):
+                game(call)
+            else:
+                round(call)
+        else:
+            round(call)
 
-        round(call)
+        #round(call)
 
     elif "Time_For_Round_10" in call.data:
         sessions[call.data[-4:]].change_time(3)
