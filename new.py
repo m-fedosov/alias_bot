@@ -117,7 +117,8 @@ def create_game(call):
     ]
 
     reply_markup = telebot.types.InlineKeyboardMarkup(keyboard)
-    createGameMessage = 'легендарная хуйня'
+    #createGameMessage = 'легендарная хуйня'
+    createGameMessage = 'параметры'
     bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.message_id, text=createGameMessage,
                           reply_markup=reply_markup)
 
