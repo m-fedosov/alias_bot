@@ -42,12 +42,17 @@ class Session:
         self.key = key
         self.counter = 0
         self.order = 0
-        self.round_time = 30
+        self.round_time = 3
         self.temp_points = 0
 
     def next_team(self,points):
         self.temp_points += points
-        if self.counter % (self.round_time) == 0:
+        print(self.temp_points)
+        if self.teams[self.order].points >= 5:
+            self.teams[self.order].points
+            #self.teams[self.order].add_points(self.temp_points)
+            return 'Win'
+        elif self.counter % (self.round_time) == 0:
             self.teams[self.order].add_points(self.temp_points)
             self.order = (self.order + 1)% len(self.teams)
             self.temp_points = 0
@@ -55,7 +60,9 @@ class Session:
         else:
             return False
 
-        #print(self.teams)
+    def cur_team(self):
+        return self.teams[self.order].name
+
     def give_word(self):
         """
         Метод возвращает слово из словаря сессии
@@ -76,7 +83,7 @@ class Session:
         if team not in self.teams:
             self.teams.append(team)
         else:
-            print("попытка дважды добавить команд",team)
+            print("попытка дважды добавить команду",team)
     
     def change_time(self, changed):
         """
