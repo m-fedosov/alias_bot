@@ -46,14 +46,13 @@ def callback_query(call):
     #     pass
     elif "Round_Length" in call.data:
         round_length(call)
-    # elif call.data == "Join":
-    #     join_game(call)
-    elif call.data == "Start_Game":
-        play_game(call)
+    elif "Start_Game" in call.data:
+        game(call)
+    elif "YES" in call.data:
+        round(call)
     elif "Time_For_Round_10" in call.data:
         sessions[call.data[-4:]].change_time(10)
         print(sessions)
-        # change_length_session(10, call)
     elif "Time_For_Round_30" in call.data:
         sessions[call.data[-4:]].change_time(30)
         print(sessions)
@@ -77,6 +76,12 @@ def callback_query(call):
     elif 'Night_Grans' in call.data:
         sessions[call.data[-4:]].add_team((call.data)[:-5])
         print(sessions)
+    elif 'Bipolar_Bears' in call.data:
+        sessions[call.data[-4:]].add_team((call.data)[:-5])
+        print(sessions)
+    elif 'dead_frogs' in call.data:
+        sessions[call.data[-4:]].add_team((call.data)[:-5])
+        print(sessions)
 
 def create_game(call):
     
@@ -87,7 +92,7 @@ def create_game(call):
 
     keyboard = [
         [telebot.types.InlineKeyboardButton("Длительность раунда", callback_data='Round_Length'+'$'+new_key)],
-        [telebot.types.InlineKeyboardButton("Начать игру", callback_data='Start_Game')],
+        [telebot.types.InlineKeyboardButton("Начать игру", callback_data='Start_Game'+'$'+new_key)],
         [telebot.types.InlineKeyboardButton("Добавить команды (по умолчанию две)", callback_data='Teams'+'$'+new_key)]
     ]
 
@@ -95,47 +100,38 @@ def create_game(call):
     createGameMessage = 'легендарная хуйня'
     bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.message_id, text=createGameMessage,
                           reply_markup=reply_markup)
-    #if call.data ==
 
+def game(call):
 
-# def join_game(call):
-#      input_session = 'Введите номер сессии:'
-#      bot.register_next_step_handler(bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.message_id,
-#                            text=input_session, parse_mode="HTML"), get_session)
-
-
-def play_game(call):
     keyboard = [
-        [telebot.types.InlineKeyboardButton("Вперёд", callback_data='round')],
+        [telebot.types.InlineKeyboardButton("Да!", callback_data='YES' + '$' + call.data[-4:])]
+    ]
+    ready = 'Вы готовы?'
+    reply_markup = telebot.types.InlineKeyboardMarkup(keyboard)
+    bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.message_id, text=ready,
+                          reply_markup=reply_markup)
 
+
+
+
+    
+
+
+
+def round(call):
+    cur_session = sessions[call.data[-4:]]
+    word = cur_session.give_word()
+    keyboard = [
+        [telebot.types.InlineKeyboardButton("Отгадано", callback_data='YES_guessed' + '$' + call.data[-4:])],
+        [telebot.types.InlineKeyboardButton("Пропущено", callback_data='YES_passed' + '$' + call.data[-4:])]
     ]
 
     reply_markup = telebot.types.InlineKeyboardMarkup(keyboard)
+    bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.message_id, text="ваше слово: "+word,
+                          reply_markup=reply_markup)
 
-    session_number = db.get_from_player(call.from_user.id)
-
-    index = 0#(db.get_from_session(key = session_number)).index(call.from_user.id)
-    print(index)
-    alias_word = db.word_from_dict(session_number, index)
-    index+=1
-    bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.message_id,
-                        text=alias_word, parse_mode="HTML", reply_markup=reply_markup)
-    
-#import time
-#import new_db as db
-
-# def round(call,round_time,key):
-#     st= time.perf_counter()
-#     order_words = db.get_from_session(key,'order_words')
-#     i = 0
-#     keyboard = [
-#         [telebot.types.InlineKeyboardButton("отгадано", callback_data='otgadano')],
-#         [telebot.types.InlineKeyboardButton("пропустить", callback_data='pass')]
-#     ]
-#     while st - time.perf_counter() < 60.0:
-#         if call.data == 'otgadano':
-#             db =
-
+    #round(call)
+    #game(call)
 
 
 def round_length(call):
@@ -169,6 +165,9 @@ def change_teams(call):
         [telebot.types.InlineKeyboardButton("Супер-коровы", callback_data='Super_Cows'+'$'+call.data[-4:])],
         [telebot.types.InlineKeyboardButton("Псы-Волколаки", callback_data='Were_Wolves'+'$'+call.data[-4:])],
         [telebot.types.InlineKeyboardButton("Ночные Бабушки", callback_data='Night_Grans'+'$'+call.data[-4:])],
+        [telebot.types.InlineKeyboardButton("Биполярные медведи", callback_data='Bipolar_Bears' + '$' + call.data[-4:])],
+        [telebot.types.InlineKeyboardButton("Лягушки в обмороке", callback_data='dead_frogs' + '$' + call.data[-4:])],
+
     ]
     reply_markup = telebot.types.InlineKeyboardMarkup(keyboard)
     teams_text = 'нажмите на названия команд, которые хотите добавить'
