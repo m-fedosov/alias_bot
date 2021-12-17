@@ -50,19 +50,19 @@ def callback_query(call):
         game(call)
     elif "YES" in call.data:
         cur_session = sessions[call.data[-4:]]
-
         if 'guessed' in call.data:
-            
-            if cur_session.next_team(1):
+            resp = cur_session.next_team(1)
+            if resp == 1:
                 game(call)
-            elif cur_session.next_team(1) == 'Win':
+            elif resp == 3:
                 game_end(call)
             else:
                 round(call)
         elif 'passed' in call.data:
-            if cur_session.next_team(0):
+            resp = cur_session.next_team(0)
+            if resp == 1:
                 game(call)
-            elif cur_session.next_team(0) == 'Win':
+            elif resp == 3:
                 game_end(call)
             else:
                 round(call)
@@ -102,6 +102,8 @@ def callback_query(call):
     elif 'Лягушки в обмороке' in call.data:
         sessions[call.data[-4:]].add_team((call.data)[:-5])
         print(sessions)
+    elif 'End_Game' in call.data:
+        thanks(call)
 
 def create_game(call):
     
@@ -221,4 +223,10 @@ def game_end(call):
     bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.message_id,
                           text=text_endgame, parse_mode="HTML", reply_markup=reply_markup)
 
+def thanks(call):
+    text = "Спасибо за игру"
+    keyboard = [[]]
+    reply_markup = telebot.types.InlineKeyboardMarkup(keyboard)
+    bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.message_id,
+                          text=text, parse_mode="HTML", reply_markup=reply_markup)
 bot.polling()

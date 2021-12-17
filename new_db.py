@@ -48,17 +48,19 @@ class Session:
     def next_team(self,points):
         self.temp_points += points
         print(self.temp_points)
-        if self.teams[self.order].points >= 5:
-            self.teams[self.order].points
-            #self.teams[self.order].add_points(self.temp_points)
-            return 'Win'
+        if self.teams[self.order].points + self.temp_points >= 5:
+            self.teams[self.order].add_points(self.temp_points)
+            #return 'Win'
+            return 3
         elif self.counter % (self.round_time) == 0:
             self.teams[self.order].add_points(self.temp_points)
             self.order = (self.order + 1)% len(self.teams)
             self.temp_points = 0
-            return True
+            #return True
+            return 1
         else:
-            return False
+            #return False
+            return 2
 
     def cur_team(self):
         return self.teams[self.order].name
