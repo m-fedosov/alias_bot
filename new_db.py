@@ -1,6 +1,44 @@
 from tinydb import TinyDB, Query
 from tinydb.operations import increment, add
 from randomize_dict import randomize_dict
+from new_rand_dict import get_rand_dict
+import numpy as np
+
+
+class Team:
+    def __init__(self, name):
+        self.name = name
+        self.points = 0
+
+
+class Session:
+    def __init__(self, key):
+        self.teams = []
+
+        with open("words.txt", encoding='utf-8') as file:
+            self.dictionary = [i[:len(i) - 1] for i in file]
+        self.key = key
+        self.counter = 0
+    def give_word(self):
+        ret = self.dictionary[self.counter]
+        self.counter += 1
+        return ret
+    def add_team(self,team : Team):
+        self.teams.append(team)
+
+    def clear(self):
+        self.key = ''
+        self.teams = []
+        self.dictionary = []
+        self.counter = 0
+
+
+
+
+
+
+
+
 
 
 
@@ -14,23 +52,24 @@ def add_session(key='', lst=[], time=60):
     :return:
     """
     db = TinyDB('db.json')
-    if db.search(Query().key == key) == []:
-        db.insert(
-            {'type': 'session',
-             'key': key,
-             'time_for_round': time,
-             'step': 0,
-             'list_of_players': lst,
-             'dictionary': [],
-             'order_player': 0,
-             'order_word': 0
-             }
-        )
-    else:
-        print("Уже есть сессия с ключом",key)
+    db.insert(
+        {'type': 'session',
+         'key': key,
+         'time_for_round': 60,
+         'list_of_teams': lst,
+         'i': [i for i in range(500)],
+         'dictionary': zip([i for i in range(500)],get_rand_dict(500)),# получил список длинной 500 из чисел от 0 до 1000 (номера слов)
+         }
+    )
 
 
+def add_team(key = '', team_name=''):
+    db = TinyDB('db.json')
+    db.update(add('list_of_teams',[team_name]),Query().key == key)
 
+def get_word_num(key =''):
+    db = TinyDB('db.json')
+    ret = get_from_session()
 
 def add_player_to_session(player_id=0, session_key=0):
     """
@@ -40,17 +79,9 @@ def add_player_to_session(player_id=0, session_key=0):
     :param session_key: ключ сессии
     """
     db = TinyDB('db.json')
-    if db.search(Query().id == player_id) == []:
-        print("нет игрока с id",player_id)
-        raise Exception
-    if db.search(Query().key == session_key) == []:
-        print("нет сессии с номером", session_key)
-        raise ValueError
-    if player_id not in get_from_session(session_key):
-        db.update(add('list_of_players', [player_id]), Query().key == session_key)
-        db.update({'curent_session':session_key},Query().id == player_id)
-    else :
-        print("Уже етсь игрок в сессии",session_key," с id", player_id)
+    db.update(add('list_of_players', [player_id]), Query().key == session_key)
+    db.update({'curent_session':session_key},Query().id == player_id)
+
 
 
 
