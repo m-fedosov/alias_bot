@@ -9,6 +9,8 @@ class Team:
     def __init__(self, name):
         self.name = name
         self.points = 0
+    def __repr__(self) -> str:
+        return str(self.name) + ' '+ str(self.points)
 
 
 class Session:
@@ -19,18 +21,27 @@ class Session:
             self.dictionary = [i[:len(i) - 1] for i in file]
         self.key = key
         self.counter = 0
+        self.round_time = 30
+    
     def give_word(self):
         ret = self.dictionary[self.counter]
         self.counter += 1
         return ret
+    
     def add_team(self,team : Team):
         self.teams.append(team)
-
+    
+    def change_time(self, changed):
+        self.round_time = changed
+    
     def clear(self):
         self.key = ''
         self.teams = []
         self.dictionary = []
         self.counter = 0
+
+    def __repr__(self) -> str:
+        return str(self.key)+ ' ' +str(self.counter)+ ' ' + str(self.round_time)+ ' ' +str(self.teams) 
 
 
 
