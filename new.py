@@ -50,7 +50,7 @@ def callback_query(call):
         if len(cur_session.teams) >= 1:
             game(call)
         else:
-            create_game(call)
+            error_teams(call)
     ##############################################
     elif "YES" in call.data:
         cur_session = sessions[call.data[-4:]]
