@@ -41,7 +41,7 @@ class Session:
         self.order = 0
         self.round_time = 3
         self.temp_points = 0
-        self.max_score = 5
+        self.max_score = 10
 
     def next_team(self,points):
         self.temp_points += points
@@ -113,9 +113,11 @@ class Session:
             team.points = 0
         self.counter = 0
         self.temp_points = 0
-
+    def get_info(self) -> str:
+        return f'Команды в текущей игре: {str([i.name for i in self.teams])}\nДлительность раунда: {str(self.round_time)}\nЧтобы выиграть, надо набрать {str(self.max_score)}'
     def __repr__(self) -> str:
         return str(self.key)+ ' ' +str(self.counter)+ ' ' + str(self.round_time)+ ' ' +str(self.teams) 
+        
 
 
 
