@@ -9,7 +9,10 @@ sessions = {}
 
 @bot.message_handler(commands=['start', 'help'])
 def send_welcome(message):
-    """Sends a message with three inline buttons attached."""
+    """
+    Отправляет приветственное сообщение с единственной кнопкой, которая запускает игру.\n 
+    В функции генерируется ключ сессии.
+    """
     
     new_key=gen_session_key()
     new_session = db.Session(new_key)
@@ -32,6 +35,9 @@ def send_welcome(message):
 
 @bot.callback_query_handler(func=lambda call: True)
 def callback_query(call):
+    """
+    Данная функция отвечает за кнопки, появляющиеся на различных этапах игры
+    """
     
     if "Create_Game" in call.data:
         create_game(call)
@@ -40,7 +46,12 @@ def callback_query(call):
     elif "Game_Length" in call.data:
         game_length(call)
     elif "Start_Game" in call.data:
-        game(call)
+        cur_session = sessions[call.data[-4:]]
+        if len(cur_session.teams) >= 1:
+            game(call)
+        else:
+            create_game(call)
+    ##############################################
     elif "YES" in call.data:
         cur_session = sessions[call.data[-4:]]
         if 'guessed' in call.data:
@@ -61,8 +72,7 @@ def callback_query(call):
                 round(call)
         else:
             round(call)
-
-
+    ###############################################
     elif "Time_For_Round_3" in call.data:
         sessions[call.data[-4:]].change_time(3)
         print(sessions)
@@ -113,6 +123,7 @@ def callback_query(call):
     elif 'Лягушки в обмороке' in call.data:
         sessions[call.data[-4:]].add_team((call.data)[:-5])
         print(sessions)
+    ###########################################################
     elif 'End_Game' in call.data:
         thanks(call)
     elif 'Next_Game' in call.data:
@@ -126,7 +137,9 @@ def callback_query(call):
 
 
 def create_game(call):
-
+    """
+    Функция отвечает за этап игры, на котором человек вводит длительность игры, длительность раунда, добавляет команды, а также начинает игру
+    """
     new_key = call.data[-4:]
     cur_session = sessions[new_key]
     cur_teams = cur_session.teams
@@ -145,7 +158,9 @@ def create_game(call):
                           reply_markup=reply_markup)
 
 def game(call):
-
+    """
+    Функция изменяет сообщение на 'Вы готовы?', показывает отвечающую команду и и её очки
+    """
     cur_session = sessions[call.data[-4:]]
     cur_team = cur_session.cur_team()
     keyboard = [
@@ -162,6 +177,9 @@ def game(call):
 
 
 def round(call):
+    """
+    Функция отвечает за раунд в игре, изменяет сообщение, показывая новое слово, под которым имеются кнопки "Отгадано" и "Пропущено"
+    """
     cur_session = sessions[call.data[-4:]]
     word = cur_session.give_word()
     keyboard = [
@@ -175,6 +193,9 @@ def round(call):
 
 
 def round_length(call):
+    """
+    Функция изменяет сообщение, показывая кнопки, через которые можно изменить количество слов, которое будет объяснять команда в раунде
+    """
     keyboard = [
         [telebot.types.InlineKeyboardButton("3", callback_data='Time_For_Round_3'+'$'+call.data[-4:]),
          telebot.types.InlineKeyboardButton("5", callback_data='Time_For_Round_5'+'$'+call.data[-4:]),
@@ -189,6 +210,9 @@ def round_length(call):
                           text=round_length_text, parse_mode="HTML", reply_markup=reply_markup)
 
 def game_length(call):
+    """
+    Функция изменяет сообщение, показывая кнопки, через которые можно изменить количество слов, требуемое для победы в игре
+    """
     keyboard = [
         [telebot.types.InlineKeyboardButton("10", callback_data='Time_For_Game_10'+'$'+call.data[-4:]),
          telebot.types.InlineKeyboardButton("20", callback_data='Time_For_Game_20'+'$'+call.data[-4:]),
@@ -203,7 +227,9 @@ def game_length(call):
                           text=round_length_text, parse_mode="HTML", reply_markup=reply_markup)
 
 def change_teams(call):
-    
+    """
+    Функция изменяет сообщение, показывая кнопки, через которые можно изменить команды, участвующие в игре
+    """
     cur_session = sessions[call.data[-4:]]
     
     keyboard = [
@@ -222,7 +248,9 @@ def change_teams(call):
 
 
 def game_end(call):
-    
+    """
+    Функция изменяет сообщение в конце игры, показывая кнопки, с помощью которых можно начать новую игру, завершить игру и посмотреть на авторов
+    """
     cur_session = sessions[call.data[-4:]]
 
     keyboard = [
@@ -242,6 +270,9 @@ def game_end(call):
 
 
 def authors(call):
+    """
+    Функция изменяет сообщение в конце игры, показывая информацию об авторах
+    """
     keyboard = [
         [telebot.types.InlineKeyboardButton("Панаятна", callback_data='after_authors' +'$' +call.data[-4:])],
     ]
@@ -250,14 +281,22 @@ def authors(call):
     bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.message_id, text=createGameMessage,
                           reply_markup=reply_markup)
 
-
-# def next_game(call):
-#     cur_session = sessions[call.data[-4:]]
-
-
-
-
+def error_teams(call):
+    """
+    Функция изменяет сообщение, показывая, что нельзя начать игру, если не была добавлена ни одна команда
+    """
+    keyboard = [
+        [telebot.types.InlineKeyboardButton("Ладно(", callback_data='Create_Game' +'$' +call.data[-4:])],
+    ]
+    reply_markup = telebot.types.InlineKeyboardMarkup(keyboard)
+    createGameMessage = 'Вам необходимо добавить хотя бы одну команду👉👈'
+    bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.message_id, text=createGameMessage,
+                          reply_markup=reply_markup)
+                          
 def thanks(call):
+    """
+    Функция отправляет сообщение с благодарностью за игру
+    """
     cur_session = sessions[call.data[-4:]]
     cur_session.clear()
     text = "Спасибо за игру"
