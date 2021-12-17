@@ -97,10 +97,10 @@ def callback_query(call):
     ################################################
     elif "Teams" in call.data :
         change_teams(call)
-    elif 'Супер коровы' in call.data:
+    elif 'Супер Коровы' in call.data:
         sessions[call.data[-4:]].add_team((call.data)[:-5])
         print(sessions)
-    elif 'Псы Волколаки 🐺' in call.data:
+    elif 'Псы Волколаки' in call.data:
         sessions[call.data[-4:]].add_team((call.data)[:-5])
         print(sessions)
     elif 'Ночные Бабушки' in call.data:
@@ -203,13 +203,16 @@ def game_length(call):
                           text=round_length_text, parse_mode="HTML", reply_markup=reply_markup)
 
 def change_teams(call):
+    
+    cur_session = sessions[call.data[-4:]]
+    
     keyboard = [
         [telebot.types.InlineKeyboardButton("ОК", callback_data='Create_Game'+'$'+call.data[-4:])],
-        [telebot.types.InlineKeyboardButton("Супер коровы", callback_data='Супер коровы'+'$'+call.data[-4:])],
-        [telebot.types.InlineKeyboardButton("Псы Волколаки 🐺", callback_data='Псы Волколаки 🐺'+'$'+call.data[-4:])],
-        [telebot.types.InlineKeyboardButton("Ночные Бабушки", callback_data='Ночные Бабушки'+'$'+call.data[-4:])],
-        [telebot.types.InlineKeyboardButton("Биполярные Медведи", callback_data='Биполярные Медведи' + '$' + call.data[-4:])],
-        [telebot.types.InlineKeyboardButton("Лягушки в обмороке", callback_data='Лягушки в обмороке' + '$' + call.data[-4:])],
+        [telebot.types.InlineKeyboardButton("Супер Коровы 🐮" + '✅' if "🐮" in cur_session.get_info() else "Супер Коровы 🐮" + '', callback_data='Супер Коровы'+'$'+call.data[-4:])],
+        [telebot.types.InlineKeyboardButton("Псы Волколаки 🐺" + '✅' if "🐺" in cur_session.get_info() else "Псы Волколаки 🐺" + '', callback_data='Псы Волколаки'+'$'+call.data[-4:])],
+        [telebot.types.InlineKeyboardButton("Ночные Бабушки 👵" + '✅' if "👵" in cur_session.get_info() else "Ночные Бабушки 👵" + '', callback_data='Ночные Бабушки'+'$'+call.data[-4:])],
+        [telebot.types.InlineKeyboardButton("Биполярные Медведи 🐼" + '✅' if "🐼" in cur_session.get_info() else "Биполярные медведи 🐼" + '', callback_data='Биполярные Медведи' + '$' + call.data[-4:])],
+        [telebot.types.InlineKeyboardButton("Лягушки в обмороке 🐸" + '✅' if "🐸" in cur_session.get_info() else "Лягушки в обмороке 🐸" + '', callback_data='Лягушки в обмороке' + '$' + call.data[-4:])],
 
     ]
     reply_markup = telebot.types.InlineKeyboardMarkup(keyboard)
