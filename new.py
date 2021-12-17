@@ -167,7 +167,7 @@ def game(call):
         [telebot.types.InlineKeyboardButton("Да!", callback_data='YES' + '$' + call.data[-4:])]
     ]
     #print(cur_team)
-    ready = f'Команда {str(cur_team)}, вы готовы?\nОчко команд:\n'
+    ready = f'Команда {str(cur_team)}, вы готовы?\nОчки команд:\n'
     for i in cur_session.teams:
         ready += (' ' + str(i.name) + ' ' + str(i.points) + '\n')
     #print(ready)
@@ -205,7 +205,7 @@ def round_length(call):
          telebot.types.InlineKeyboardButton("50", callback_data='Time_For_Round_50'+'$'+call.data[-4:])]
     ]
     reply_markup = telebot.types.InlineKeyboardMarkup(keyboard)
-    round_length_text = 'Выберите длительность раунда (в количестве слов)'
+    round_length_text = 'Выберите длительность раунда (количество слов, объясняемое за раунд)'
     bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.message_id,
                           text=round_length_text, parse_mode="HTML", reply_markup=reply_markup)
 
@@ -260,7 +260,7 @@ def game_end(call):
     ]
 
     text_endgame = 'Игра завершена, победила команда команда\n'
-    text_endgame += 'Очко команд:\n'
+    text_endgame += 'Очки команд:\n'
     for i in cur_session.teams:
         text_endgame += (' ' + str(i.name) + ' ' + str(i.points) + '\n')
     
@@ -299,7 +299,7 @@ def thanks(call):
     """
     cur_session = sessions[call.data[-4:]]
     cur_session.clear()
-    text = "Спасибо за игру"
+    text = "Спасибо за игру!"
     keyboard = [[]]
     reply_markup = telebot.types.InlineKeyboardMarkup(keyboard)
     bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.message_id,
