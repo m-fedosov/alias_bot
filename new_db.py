@@ -44,11 +44,12 @@ class Session:
         self.order = 0
         self.round_time = 3
         self.temp_points = 0
+        self.max_score = 5
 
     def next_team(self,points):
         self.temp_points += points
         print(self.temp_points)
-        if self.teams[self.order].points + self.temp_points >= 5:
+        if self.teams[self.order].points + self.temp_points >= self.max_score:
             self.teams[self.order].add_points(self.temp_points)
             #return 'Win'
             return 3
@@ -61,7 +62,8 @@ class Session:
         else:
             #return False
             return 2
-
+    def change_max_score(self,new_max):
+        self.max_score = new_max
 
     def cur_team(self):
         return self.teams[self.order].name
