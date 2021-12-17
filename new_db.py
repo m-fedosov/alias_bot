@@ -1,7 +1,4 @@
 from randomize_dict import randomize_dict
-#import numpy as np
-
-
 
 class Team:
     """
@@ -44,25 +41,34 @@ class Session:
         self.max_score = 10
 
     def next_team(self,points):
+        """
+        Метод логика игры
+
+        """
         self.temp_points += points
         print(self.temp_points)
         if self.teams[self.order].points + self.temp_points >= self.max_score:
             self.teams[self.order].add_points(self.temp_points)
-            #return 'Win'
             return 3
         elif self.counter % (self.round_time) == 0:
             self.teams[self.order].add_points(self.temp_points)
-            self.order = (self.order + 1)% len(self.teams)
+            self.order = (self.order + 1) % len(self.teams)
             self.temp_points = 0
-            #return True
             return 1
         else:
-            #return False
             return 2
+
     def change_max_score(self,new_max):
+        """
+        метод изменяет количество очков необходимых для победы одной из команд
+        :param new_max: новое значение
+        """
         self.max_score = new_max
 
     def cur_team(self):
+        """
+        Метод возвращает название команды, которая в данный момент отвечает
+        """
         return self.teams[self.order].name
 
     def give_word(self):
@@ -89,10 +95,6 @@ class Session:
                 return 0
         self.teams.append(team)
 
-        # if team not in self.teams:
-        #     self.teams.append(team)
-        # else:
-        #     print("попытка дважды добавить команду",team)
     
     def change_time(self, changed):
         """
@@ -104,7 +106,7 @@ class Session:
     
     def clear(self):
         """
-        Метод очищает все поля сессии
+        Метод очищает поля сессии
         """
         #self.key = ''
         #self.teams = []
@@ -115,6 +117,9 @@ class Session:
         self.temp_points = 0
     
     def get_info(self) -> str:
+        """
+        Метод возвращает строку, содержащуую информацию о параметрах, данной сессии
+        """
         return f'Команды в текущей игре: {str([i.name for i in self.teams])}\nДлительность раунда: {str(self.round_time)}\nЧтобы выиграть, надо набрать {str(self.max_score)}'
     
     def __repr__(self) -> str:
