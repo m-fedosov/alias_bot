@@ -1,9 +1,6 @@
-from tinydb import TinyDB, Query
-from tinydb.operations import increment, add
 from randomize_dict import randomize_dict
-from new_rand_dict import get_rand_dict
-import numpy as np
-import random
+#import numpy as np
+
 
 
 class Team:

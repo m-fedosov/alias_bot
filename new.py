@@ -32,8 +32,8 @@ def send_welcome(message):
 
 @bot.callback_query_handler(func=lambda call: True)
 def callback_query(call):
+    
     if "Create_Game" in call.data:
-
         create_game(call)
     elif "Round_Length" in call.data:
         round_length(call)
@@ -137,11 +137,6 @@ def game(call):
     reply_markup = telebot.types.InlineKeyboardMarkup(keyboard)
     bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.message_id, text=ready,
                           reply_markup=reply_markup)
-
-
-
-
-    
 
 
 
