@@ -87,15 +87,12 @@ class Session:
 
         :param team: класс Team, команда, которая будет добавлена в сессию, если её ещё там нет
         """
-        #print(name)
         team = Team(name)
-        print(team)
         for i in self.teams:
             if i.name == team.name:
                 return 0
         self.teams.append(team)
 
-    
     def change_time(self, changed):
         """
         Метод изменяет время одного раунда в сессии
@@ -108,9 +105,6 @@ class Session:
         """
         Метод очищает поля сессии
         """
-        #self.key = ''
-        #self.teams = []
-        #self.dictionary = []
         for team in self.teams:
             team.points = 0
         self.counter = 0
@@ -118,7 +112,7 @@ class Session:
     
     def get_info(self) -> str:
         """
-        Метод возвращает строку, содержащуую информацию о параметрах, данной сессии
+        Метод возвращает строку, содержащую информацию о параметрах, данной сессии
         """
         return f'Команды в текущей игре: {str([i.name for i in self.teams])}\nДлительность раунда: {str(self.round_time)}\nЧтобы выиграть, надо набрать {str(self.max_score)}'
     
