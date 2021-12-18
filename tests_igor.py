@@ -1,8 +1,9 @@
+import select
 import unittest
 
 from new_db import Team, Session
 from randomize_dict import randomize_dict
-
+from session_key_generator import gen_session_key
 class SessionTest(unittest.TestCase):
     
     def setUp(self) -> None:
@@ -90,6 +91,15 @@ class SessionTest(unittest.TestCase):
         self.session.dictionary = randomize_dict()
         b = randomize_dict()
         self.assertNotEqual(self.session.dictionary, b)
-    
+    def test_key_gen_1000(self): #тыща разов если вдруг что
+        for i in range(1000):
+            self.assertNotEqual(gen_session_key(),gen_session_key())
+    def test_repr(self):
+        self.session.counter = 3
+        self.assertIn(str(self.session.counter),str(self.session))
+    def test_get_info(self):
+        self.session.teams = [Team('1'),Team('2')]
+        self.assertIn("'1', '2'", self.session.get_info())
+
     if __name__ == '__main__':
         unittest.main()
