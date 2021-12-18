@@ -1,5 +1,8 @@
 import random
 def gen_session_key():
+
+    """Генерирует уникальный ключ сессии"""
+
     session_key = ''
     for i in range(4):
         x = random.randint(1, 2)

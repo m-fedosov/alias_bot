@@ -1,10 +1,10 @@
 
 import numpy as np
 
-''' Возвращает массив с перемешанными в случайном порядке словами'''
-
 def randomize_dict():
-    
+
+    ''' Возвращает массив с перемешанными в случайном порядке словами'''
+
     dict_from_file = []
     with open('words.txt', 'r', encoding = 'UTF-8') as file:
         for i in file:
