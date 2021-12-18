@@ -61,9 +61,11 @@ class Session:
         """
         Метод логика игры
 
+        возвращает 1, когда нужно передать ход другой команде\n
+        возвращает 3, когда команда, которой начисляются очки победила\n
+        возвращает 2 в остальных случаяюх
         """
         self.temp_points += points
-        # print(self.temp_points)
         if self.teams[self.order].points + self.temp_points >= self.max_score:
             self.teams[self.order].add_points(self.temp_points)
             return 3
@@ -102,7 +104,7 @@ class Session:
         """
         Метод добавляет в сессию новую команду
 
-        :param team: класс Team, команда, которая будет добавлена в сессию, если её ещё там нет
+        :param name: класс Team, команда, которая будет добавлена в сессию, если её ещё там нет
         """
         team = Team(name)
         for i in self.teams:
@@ -134,8 +136,14 @@ class Session:
         return f'Команды в текущей игре: {str([i.name for i in self.teams])}\nДлительность раунда: {str(self.round_time)}\nЧтобы выиграть, надо набрать {str(self.max_score)}'
 
     def __repr__(self) -> str:
+        """
+        Метод
+
+        :return: строковое представление класса Session
+        """
         return str(self.key) + ' ' + str(self.counter) + ' ' + str(self.round_time) + ' ' + str(self.teams)
 
 
 x = Session('asd')
+
 
