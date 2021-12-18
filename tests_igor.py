@@ -59,6 +59,32 @@ class SessionTest(unittest.TestCase):
         self.session.add_team('test')
         self.assertEqual(self.session.add_team('test'), 0)
 
+    def test_change_time_not_default_3(self):
+        a = self.session.round_time
+        self.session.change_time(0)
+        self.assertNotEqual(self.session.round_time, a)
     
+    def test_change_time_10(self):
+        self.session.change_time(10)
+        self.assertEqual(self.session.round_time, 10)
+    
+    def test_changes_and_clear_all(self):
+        for i in range(3):
+            self.session.add_team(f'test{i}')
+        for team in self.session.teams:
+            team.points = 5
+        for team in self.session.teams:
+            self.assertEqual(team.points, 5)
+        self.session.counter = 5
+        self.assertEqual(self.session.counter, 5)
+        self.session.temp_points = 6
+        self.assertEqual(self.session.temp_points, 6)
+        self.session.clear()
+        for team in self.session.teams:
+            self.assertEqual(team.points, 0)
+        self.assertEqual(self.session.counter, 0)
+        self.assertEqual(self.session.temp_points, 0)
+        
+
     if __name__ == '__main__':
         unittest.main()
