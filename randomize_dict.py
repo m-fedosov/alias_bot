@@ -1,5 +1,4 @@
-
-import numpy as np
+import random
 
 def randomize_dict():
     ''' 
@@ -10,12 +9,5 @@ def randomize_dict():
     with open('words.txt', 'r', encoding = 'UTF-8') as file:
         for i in file:
             dict_from_file.append(i.rstrip())
-    
-    unique_dict = []
-    order = np.arange(len(dict_from_file))
-    np.random.shuffle(order)
-    for i in order:
-        unique_dict.append(dict_from_file[i])
-
-    return unique_dict
-
+    random.shuffle(dict_from_file)
+    return dict_from_file
