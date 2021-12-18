@@ -144,6 +144,4 @@ class Session:
         return str(self.key) + ' ' + str(self.counter) + ' ' + str(self.round_time) + ' ' + str(self.teams)
 
 
-x = Session('asd')
-
 
