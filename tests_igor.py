@@ -1,6 +1,7 @@
 import unittest
 
 from new_db import Team, Session
+from randomize_dict import randomize_dict
 
 class SessionTest(unittest.TestCase):
     
@@ -85,6 +86,10 @@ class SessionTest(unittest.TestCase):
         self.assertEqual(self.session.counter, 0)
         self.assertEqual(self.session.temp_points, 0)
         
-
+    def test_randomize_diff(self):
+        self.session.dictionary = randomize_dict()
+        b = randomize_dict()
+        self.assertNotEqual(self.session.dictionary, b)
+    
     if __name__ == '__main__':
         unittest.main()

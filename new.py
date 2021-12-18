@@ -1,6 +1,5 @@
 import telebot
 from session_key_generator import gen_session_key
-#import DataBase as db
 import new_db as db
 
 bot = telebot.TeleBot("5036774816:AAHchvlUTJaraZVF0YjQU45x0PviPkweH8I", parse_mode="MarkdownV2")
