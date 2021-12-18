@@ -21,5 +21,12 @@ class TeamTest(unittest.TestCase):
         for i in range(3):
             a.add_points(5)
         self.assertEqual(str(a), 'test 15')
+    def test_equality(self):
+        a= Team('name')
+        b= Team('name')
+        self.assertEqual(str(a),str(b))
+    def test_construct_session
+
+
     if __name__ == '__main__':
         unittest.main()
