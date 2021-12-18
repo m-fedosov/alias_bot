@@ -260,7 +260,7 @@ def game_end(call):
         [telebot.types.InlineKeyboardButton("Авторы", callback_data='Authors'+'$'+call.data[-4:])]
     ]
 
-    text_endgame = 'Игра завершена, победила команда команда\n'
+    text_endgame = 'Игра завершена, победила команда '+ cur_session.cur_team() + '\n'
     text_endgame += 'Очки команд:\n'
     for i in cur_session.teams:
         text_endgame += (' ' + str(i.name) + ' ' + str(i.points) + '\n')
