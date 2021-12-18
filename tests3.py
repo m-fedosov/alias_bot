@@ -25,7 +25,6 @@ class TeamTest(unittest.TestCase):
         a= Team('name')
         b= Team('name')
         self.assertEqual(str(a),str(b))
-    def test_construct_session
 
 
     if __name__ == '__main__':
