@@ -46,7 +46,7 @@ class Session:
 
         """
         self.temp_points += points
-        print(self.temp_points)
+        #print(self.temp_points)
         if self.teams[self.order].points + self.temp_points >= self.max_score:
             self.teams[self.order].add_points(self.temp_points)
             return 3
