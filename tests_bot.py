@@ -2,14 +2,18 @@ import unittest
 import time
 from telethon.sync import TelegramClient
 api_id = 18272629
-api_hash = '63ee105f4f0fc9c0657bde7bcbb3a0bb'
+with open('token.txt', 'r') as file:
+    api_hash = file
 client = TelegramClient('test_alias', api_id, api_hash)
 client.start()
 
 
 class BotTests(unittest.TestCase):
     def test_start(self):
-        self.assertEqual(client.send_message('your_alias_bot', '/start'), client.get_messages('your_alias_bot')[0])
+        client.send_message('your_alias_bot', '/start')
+        time.sleep(2)
+        message = client.get_messages('your_alias_bot')[0]
+        self.assertEqual('Суть игры' in message.message, True)
         time.sleep(2)
         self.change_msg_by_button()
 
@@ -20,7 +24,6 @@ class BotTests(unittest.TestCase):
         self.assertEqual(message_mainMenu is not message_start, True)
 
     def test_start_game_without_teams(self):
-        time.sleep(20)
         self.test_start()
         message = client.get_messages('your_alias_bot')[0]
         message.click(text='Начать игру')
@@ -29,7 +32,6 @@ class BotTests(unittest.TestCase):
         message.click()
 
     def test_time_changing(self):
-        time.sleep(80)
         self.test_start()
         message = (client.get_messages('your_alias_bot'))[0]
         message.click(text='Длительность раунда')
@@ -40,7 +42,6 @@ class BotTests(unittest.TestCase):
         self.assertEqual('Длительность раунда: 5' in message.message, True)
 
     def test_game_length_changing(self):
-        time.sleep(160)
         self.test_start()
         message = (client.get_messages('your_alias_bot'))[0]
         message.click(text='Длительность игры')
@@ -61,13 +62,28 @@ class BotTests(unittest.TestCase):
         message = client.get_messages('your_alias_bot')[0]
         self.assertEqual('Псы Волколаки' in message.message, True)
 
-    def test_start_game_with_teams(self):
-        time.sleep(240)
+    def test_game_with_teams(self):
         self.add_teams()
         message = client.get_messages('your_alias_bot')[0]
         message.click(text='Начать игру')
+        time.sleep(2)
         message = client.get_messages('your_alias_bot')[0]
         self.assertEqual('Очки команд:' in message.message, True)
+        message.click(text='Да!')
+        time.sleep(2)
+        message = client.get_messages('your_alias_bot')[0]
+        self.assertEqual('ваше слово' in message.message, True)
+        message.click(text='Отгадано')
+        new_message = client.get_messages('your_alias_bot')[0]
+        self.assertEqual('ваше слово' in message.message and new_message.message != message.message, True)
+        new_message.click(text='Пропущено')
+        message = new_message
+        new_message = client.get_messages('your_alias_bot')[0]
+        self.assertEqual('ваше слово' in message.message and new_message.message != message.message, True)
+        new_message.click(text='Отгадано')
+        new_message = client.get_messages('your_alias_bot')[0]
+        self.assertEqual('Псы Волколаки 2' in new_message.message, True)
+
     if __name__ == '__main__':
         client.start()
         unittest.main()
