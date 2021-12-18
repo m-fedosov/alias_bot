@@ -24,7 +24,8 @@ def send_welcome(message):
     ]
 
     reply_markup = telebot.types.InlineKeyboardMarkup(keyboard)
-
+    pic = 'https://play-lh.googleusercontent.com/z51QcdFNaomOeMaJy8X0Fy5rusgnvpmoB4UevtRLR-M4_9NzUQji7YVU08J3vUL10w'
+    bot.send_photo(message.chat.id, pic)
     bot.send_message(message.chat.id, 'Суть игры заключается в объяснении слов с помощью синонимов, '
                                       'антонимов или подсказок. Игрокам необходимо обьяснить как можно '
                                       'больше слов за отведенный период времени. За каждое отгаданное слово '

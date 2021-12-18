@@ -68,6 +68,17 @@ class BotTests(unittest.TestCase):
             return True
         else:
             return False
+    def test_length_10(self) -> True:
+        message = client.get_messages('your_alias_bot')[0]
+        message.click(text='Длительность игры')
+        message = client.get_messages('your_alias_bot')[0]
+        message.click(text='10')
+        message.click(text='ОК')
+        message = client.get_messages('your_alias_bot')[0]
+        if 'Чтобы выиграть, надо набрать 10' in message.message:
+            return True
+        else:
+            return False
     if __name__ == '__main__':
         client.start()
         unittest.main()
